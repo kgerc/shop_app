@@ -1,45 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/providers/product.dart';
 import '../screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 // ignore: use_key_in_widget_constructors
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-  // ignore: prefer_const_constructors_in_immutables
-  ProductItem(this.id, this.title, this.imageUrl);
-
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(ProductDetailScreen.routeName, arguments: id);
-            },
-            child: Image.network(imageUrl, fit: BoxFit.cover),
-          ),
-          footer: GridTileBar(
-            backgroundColor: Colors.black87,
-            leading: IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {},
-              // ignore: deprecated_member_use
-              color: Colors.orange,
+    return Consumer<Product>(
+      builder: (ctx, product, child) => ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: GridTile(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                    arguments: product.id);
+              },
+              child: Image.network(product.imageUrl, fit: BoxFit.cover),
             ),
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.shopping_cart),
-              onPressed: () {},
-              // ignore: deprecated_member_use
-              color: Colors.orange,
-            ),
-          )),
+            footer: GridTileBar(
+              backgroundColor: Colors.black87,
+              leading: IconButton(
+                icon: Icon(product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                onPressed: () {
+                  product.toggleFavouriteStatus();
+                },
+                // ignore: deprecated_member_use
+                color: Colors.orange,
+              ),
+              title: Text(
+                product.title,
+                textAlign: TextAlign.center,
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () {},
+                // ignore: deprecated_member_use
+                color: Colors.orange,
+              ),
+            )),
+      ),
     );
   }
 }
