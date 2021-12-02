@@ -3,7 +3,6 @@ import 'package:shop_app/providers/product.dart';
 import '../screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
-// ignore: use_key_in_widget_constructors
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
