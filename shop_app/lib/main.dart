@@ -17,11 +17,11 @@ import 'firebase_options.dart';
 
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(MyApp());
+	WidgetsFlutterBinding.ensureInitialized();
+	await Firebase.initializeApp(
+		options: DefaultFirebaseOptions.currentPlatform,
+	);
+	runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -40,11 +40,11 @@ class MyApp extends StatelessWidget {
 					create: (ctx) => Orders(),
 				),
 				Provider<AuthenticationService>(
-          			create: (_) => AuthenticationService(FirebaseAuth.instance),
-        		),
+								create: (_) => AuthenticationService(FirebaseAuth.instance),
+						),
 				StreamProvider (
-          			create: (context) => context.read<AuthenticationService>().authStateChanges, initialData: null,
-        		),
+								create: (context) => context.read<AuthenticationService>().authStateChanges, initialData: null,
+						),
 			],
 			child: MaterialApp(
 				title: 'Flutter Demo',
@@ -71,9 +71,9 @@ class MyApp extends StatelessWidget {
 	// 	  Key? key,
 	// }) : super(key : key);
 
-  	// @override 
-  	// Widget build(BuildContext context){
-    // 	final firebaseUser = context.watch<User?>();
+		// @override 
+		// Widget build(BuildContext context){
+		// 	final firebaseUser = context.watch<User?>();
 	
 	// 	if(firebaseUser != null){
 	// 		return HomePage();
