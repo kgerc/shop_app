@@ -1,4 +1,10 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/src/provider.dart';
+import 'package:shop_app/models/authentication_service.dart';
+import 'package:shop_app/screens/login_screen.dart';
 import 'package:shop_app/screens/orders_screen.dart';
 import 'package:shop_app/screens/user_products.dart';
 
@@ -35,7 +41,21 @@ class AppDrawer extends StatelessWidget {
             Navigator.of(context)
                 .pushReplacementNamed(UserProductsScreen.routeName);
           },
-        )
+        ),
+        context.watch<User?>() == null ? ListTile(
+          leading: Icon(Icons.login),
+          title: Text("Log in"),
+          onTap: () {
+            Navigator.of(context).pushNamed(LoginScreen.routeName);
+          },
+        ) :
+        ListTile(
+          leading: Icon(Icons.logout),
+          title: Text("Log out"),
+          onTap: () {
+            context.read<AuthenticationService>().signOut();
+          },
+        ) 
       ],
     ));
   }
