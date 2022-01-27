@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 			setState(() {
 				_isLoading = true;
 			});
-			Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+			Provider.of<Products>(context).fetchAndSetProducts(FirebaseAuth.instance.currentUser).then((_) {
 				setState(() {
 					_isLoading = false;
 				});
