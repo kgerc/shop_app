@@ -13,94 +13,118 @@ import '../widgets/badge.dart';
 import '../providers/cart.dart';
 
 enum FilterOptions {
-	Favorites,
-	All,
+  Favorites,
+  All,
+  NotFavorites,
 }
 
 class ProductsOverviewScreen extends StatefulWidget {
-	@override
-	_ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+  @override
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
-	var _showOnlyFavorites = false;
-	var _isInit = true;
-	var _isLoading = false;
+  var _showOnlyFavorites = false;
+  bool _showOnlyNotFavorites = false;
+  var _isInit = true;
+  var _isLoading = false;
 
-	@override
-	void initState() {
-		super.initState();
-	}
+  @override
+  void initState() {
+    super.initState();
+  }
 
-	@override
-	void didChangeDependencies() {
-		if (_isInit) {
-			setState(() {
-				_isLoading = true;
-			});
-			Provider.of<Products>(context).fetchAndSetProducts(FirebaseAuth.instance.currentUser).then((_) {
-				setState(() {
-					_isLoading = false;
-				});
-			});
-		}
-		_isInit = false;
-		super.didChangeDependencies();
-	}
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context)
+          .fetchAndSetProducts(FirebaseAuth.instance.currentUser)
+          .catchError((err) => {
+                setState(() {
+                  _isLoading = false;
+                }),
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Failed to load products...check your internet connection',
+                    ),
+                    duration: Duration(seconds: 5),
+                  ),
+                )
+              })
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
-	@override
-	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				title: Text('MyShop'),
-				actions: <Widget>[
-					PopupMenuButton(
-						onSelected: (FilterOptions selectedValue) {
-							setState(() {
-								if (selectedValue == FilterOptions.Favorites) {
-									_showOnlyFavorites = true;
-								} else {
-									_showOnlyFavorites = false;
-								}
-							});
-						},
-						icon: Icon(
-							Icons.more_vert,
-						),
-						itemBuilder: (_) => [
-							PopupMenuItem(
-								child: Text('Only Favorites'),
-								value: FilterOptions.Favorites,
-							),
-							PopupMenuItem(
-								child: Text('Show All'),
-								value: FilterOptions.All,
-							),
-						],
-					),
-					Consumer<Cart>(
-						builder: (_, cart, ch) => Badge(
-							child: ch!,
-							value: cart.itemCount.toString(),
-						),
-						child: IconButton(
-							icon: Icon(
-								Icons.shopping_cart,
-							),
-							onPressed: () {
-								Navigator.of(context).pushNamed(CartScreen.routeName);
-							},
-						),
-					),
-				],
-			),
-			drawer: AppDrawer(),
-			body: _isLoading
-					? Center(
-							child: CircularProgressIndicator(),
-						)
-					: ProductsGrid(_showOnlyFavorites),
-		);
-	}
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('MyShop'),
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (FilterOptions selectedValue) {
+              setState(() {
+                if (selectedValue == FilterOptions.Favorites) {
+                  _showOnlyFavorites = true;
+                  _showOnlyNotFavorites = false;
+                } else if (selectedValue == FilterOptions.NotFavorites) {
+                  _showOnlyNotFavorites = true;
+                } else {
+                  _showOnlyFavorites = false;
+                  _showOnlyNotFavorites = false;
+                }
+              });
+            },
+            icon: Icon(
+              Icons.more_vert,
+            ),
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text('Only Favorites'),
+                value: FilterOptions.Favorites,
+              ),
+              PopupMenuItem(
+                child: Text('Show All'),
+                value: FilterOptions.All,
+              ),
+              PopupMenuItem(
+                child: Text('Show not favourites'),
+                value: FilterOptions.NotFavorites,
+              ),
+            ],
+          ),
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch!,
+              value: cart.itemCountValue.toString(),
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
+          ),
+        ],
+      ),
+      drawer: AppDrawer(),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorites, _showOnlyNotFavorites),
+    );
+  }
 }
-

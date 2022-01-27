@@ -25,10 +25,19 @@ class Cart with ChangeNotifier {
     return _items.length;
   }
 
+  int get itemCountValue {
+    var itemCount = 0;
+    _items.forEach((key, cartItem) {
+      itemCount += cartItem.quantity;
+    });
+    return itemCount;
+  }
+
   double get totalAmount {
     var total = 0.0;
     _items.forEach((key, cartItem) {
       total += cartItem.price * cartItem.quantity;
+      total += 12.99;
     });
     return total;
   }

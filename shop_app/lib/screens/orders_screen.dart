@@ -13,9 +13,15 @@ class OrdersScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Your orders')),
       drawer: AppDrawer(),
-      body: ListView.builder(
-          itemCount: orderData.orders.length,
-          itemBuilder: (ctx, i) => OrderItem(orderData.orders[i])),
+      body: orderData.orders.length > 0
+          ? ListView.builder(
+              itemCount: orderData.orders.length,
+              itemBuilder: (ctx, i) => OrderItem(orderData.orders[i]))
+          : Text('There are no orders',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              )),
     );
   }
 }

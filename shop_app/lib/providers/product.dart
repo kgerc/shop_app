@@ -1,48 +1,48 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'products.dart';
+import 'dart:convert';
 
 class Product with ChangeNotifier {
-	final String id;
-	final String title;
-	final String description;
-	final double price;
-	final String imageUrl;
-	bool isFavorite;
+  final String id;
+  final String title;
+  final String description;
+  final double price;
+  final String imageUrl;
+  bool isFavorite;
 
-	// final FirebaseAuth auth = FirebaseAuth.instance;
-	// final User user = auth.currentUser;
-	// final uid = user.uid;
+  Product({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.price,
+    required this.imageUrl,
+    this.isFavorite = false,
+  });
 
-
-	Product({
-		required this.id,
-		required this.title,
-		required this.description,
-		required this.price,
-		required this.imageUrl,
-		this.isFavorite = false,
-	});
-
-	void toggleFavouriteStatus(BuildContext context) {
-		final User user = FirebaseAuth.instance.currentUser!;
-
-		//addToFavourite(user);
-		isFavorite = !isFavorite;
-
-		Provider.of<Products>(context, listen: false).updateFavourite(user);
-
-		notifyListeners();
-	}
-
-	
-
+  Future<void> toggleFavouriteStatus() async {
+    final oldStatus = isFavorite;
+    isFavorite = !isFavorite;
+    notifyListeners();
+    final url =
+        'https://shop-app-9f7e6-default-rtdb.firebaseio.com/products/$id.json';
+    try {
+      final response = await http.patch(Uri.parse(url),
+          body: json.encode({
+            'isFavourite': isFavorite,
+          }));
+      if (response.statusCode >= 400) {
+        isFavorite = oldStatus;
+        notifyListeners();
+      }
+    } catch (error) {
+      isFavorite = oldStatus;
+      notifyListeners();
+    }
+  }
 }
 
 // User(
