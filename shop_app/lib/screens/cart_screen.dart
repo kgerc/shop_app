@@ -39,6 +39,7 @@ class CartScreen extends StatelessWidget {
 													Provider.of<Orders>(context, listen: false).addOrder(
 														cart.items.values.toList(),
 														cart.totalAmount,
+                            FirebaseAuth.instance.currentUser!
 													);
 													cart.clear();
 												} else

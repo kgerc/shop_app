@@ -1,5 +1,7 @@
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:http/http.dart' as http;
 import './cart.dart';
 
 class OrderItem {
@@ -16,6 +18,14 @@ class OrderItem {
   });
 }
 
+
+// class CartItem {
+//   final String id;
+//   final String title;
+//   final int quantity;
+//   final double price;
+
+
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
@@ -23,7 +33,7 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  void addOrder(List<CartItem> cartProducts, double total) {
+  Future <void> addOrder(List<CartItem> cartProducts, double total, User user) async {
     _orders.insert(
       0,
       OrderItem(
@@ -34,5 +44,36 @@ class Orders with ChangeNotifier {
       ),
     );
     notifyListeners();
+
+    final url = 'https://shop-app-9f7e6-default-rtdb.firebaseio.com/orders/${user.uid}.json';
+		try {
+			print(_orders);
+
+      var cartProductsToSend = [];
+      
+      for (var item in cartProducts) {
+        cartProductsToSend.add({
+            "id": item.id,
+            "title": item.title,
+            "quantity": item.quantity,
+            "price": item.price
+        });
+      }
+
+			final response = await http.post(
+				Uri.parse(url),
+				body: json.encode({
+          'amount': total,
+          'dateTime': DateTime.now().toString(),
+          'products': cartProductsToSend
+        })
+			);
+		
+		} catch (error) {
+			rethrow;
+		}
+
   }
+
+
 }
