@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/widgets/order_item.dart';
 import './cart.dart';
 
 class OrderItem {
@@ -47,7 +48,6 @@ class Orders with ChangeNotifier {
 
     final url = 'https://shop-app-9f7e6-default-rtdb.firebaseio.com/orders/${user.uid}.json';
 		try {
-			print(_orders);
 
       var cartProductsToSend = [];
       
@@ -74,6 +74,44 @@ class Orders with ChangeNotifier {
 		}
 
   }
+
+
+
+
+Future<void> fetchAndSetOrders(User user) async {
+		final url =
+				'https://shop-app-9f7e6-default-rtdb.firebaseio.com/orders/${user.uid}.json';
+        
+		try {
+			final response = await http.get(Uri.parse(url));
+			final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
+			final List<OrderItem> loadedOrders = [];
+			extractedData.forEach((orderId, orderData) {
+        final List<CartItem> productList = [];
+        for (var item in orderData['products']) {
+          productList.add(CartItem(
+            id: item['id'], 
+            title: item['title'], 
+            quantity: item['quantity'], 
+            price: item['price']
+          ));
+        }
+				loadedOrders.add(OrderItem(
+					id: orderId,
+          amount: orderData['amount'],
+          dateTime: DateTime.parse(orderData['dateTime']),
+          products: productList
+				));
+			});
+			_orders = loadedOrders;
+			notifyListeners();
+      //print(loadedOrders);
+		} catch (err) {
+			rethrow;
+		}
+	}
+
 
 
 }
