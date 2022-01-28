@@ -6,6 +6,7 @@ import 'package:provider/src/provider.dart';
 import 'package:shop_app/models/authentication_service.dart';
 import 'package:shop_app/screens/login_screen.dart';
 import 'package:shop_app/screens/orders_screen.dart';
+import 'package:shop_app/screens/registration_screen.dart';
 import 'package:shop_app/screens/user_products.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -83,6 +84,13 @@ class drawerContent extends StatelessWidget{
 						title: Text("Log in"),
 						onTap: () {
 							Navigator.of(context).pushNamed(LoginScreen.routeName);
+						},
+					),
+          ListTile(
+						leading: Icon(Icons.person_add),
+						title: Text("Sign up"),
+						onTap: () {
+							Navigator.of(context).pushNamed(RegistrationScreen.routeName);
 						},
 					) 
 					 

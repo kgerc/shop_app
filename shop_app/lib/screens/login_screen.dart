@@ -17,45 +17,45 @@ class LoginScreen extends StatelessWidget {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(title: Text("Log in")),
-			body: Padding(
-				padding: const EdgeInsets.all(16.0),
-				child: Column(
-				children: [
-					TextField(
-						controller: emailController,
-						decoration: InputDecoration(labelText: "Email"),
-					),
-					TextField(
-						controller: passwordController,
-						decoration: InputDecoration(labelText: "Password"),
-						obscureText: true,
-					),
-					ElevatedButton(
-						onPressed: (){
-							context.read<AuthenticationService>().signIn(
-								email: emailController.text.trim(),
-								password: passwordController.text.trim()
-							);
-              final firebaseUser = Provider.of<User?>(context, listen: false);
-							if (firebaseUser != null)
-              {
-								Navigator.of(context).pushReplacementNamed('/');
-							} else {
-								Fluttertoast.showToast(
-        						msg: "Uncorrect email or password!",
-        						toastLength: Toast.LENGTH_SHORT,
-        						gravity: ToastGravity.BOTTOM,
-        						timeInSecForIosWeb: 1,
-        						backgroundColor: Colors.purple[50],
-        						textColor: Colors.black87,
-        						fontSize: 16.0
-    							);
-							}
-						},
-						child: Text("Sign in"),
-					)
-				],
-			),
+			body: 
+				Padding(
+					padding: const EdgeInsets.all(16.0),
+					child: Column(
+					children: [
+						TextField(
+							controller: emailController,
+							decoration: InputDecoration(labelText: "Email"),
+						),
+						TextField(
+							controller: passwordController,
+							decoration: InputDecoration(labelText: "Password"),
+							obscureText: true,
+						),
+						ElevatedButton(
+							onPressed: () async {
+								await context.read<AuthenticationService>().signIn(
+									email: emailController.text.trim(),
+									password: passwordController.text.trim()
+								);
+								if (FirebaseAuth.instance.currentUser != null)
+								{
+									Navigator.of(context).pushReplacementNamed('/');
+								} else {
+									Fluttertoast.showToast(
+										msg: "Uncorrect email or password!",
+										toastLength: Toast.LENGTH_SHORT,
+										gravity: ToastGravity.BOTTOM,
+										timeInSecForIosWeb: 1,
+										backgroundColor: Colors.purple[50],
+										textColor: Colors.black87,
+										fontSize: 16.0
+									);
+								}
+							},
+							child: Text("Sign in"),
+						)
+					],
+				),
 			));
 	}
 }

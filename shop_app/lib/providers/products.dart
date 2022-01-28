@@ -65,12 +65,12 @@ class Products with ChangeNotifier {
 		try {
 			final response = await http.get(Uri.parse(url));
 			final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      var favData = {};
+      Map<dynamic, dynamic>? favData = {};
       if(user != null)
       {
         final favurl = 'https://shop-app-9f7e6-default-rtdb.firebaseio.com/favourites/${user.uid}.json';
         final favresponse = await http.get(Uri.parse(favurl));
-			  favData = json.decode(favresponse.body) as Map<String, dynamic>;
+			  favData = json.decode(favresponse.body) as Map<String, dynamic>?;
       }
 			final List<Product> loadedProducts = [];
 			extractedData.forEach((prodId, prodData) {
@@ -81,7 +81,7 @@ class Products with ChangeNotifier {
 					title: prodData['title'],
 					description: prodData['description'],
 					price: prodData['price'],
-					isFavorite: user == null ? false: favData.keys.contains(prodId) ,// I tutaj wstawimy tą informację           //prodData['isFavourite'],
+					isFavorite: user == null ? false: favData == null ? false : favData.keys.contains(prodId) ,// I tutaj wstawimy tą informację           //prodData['isFavourite'],
 					imageUrl: prodData['imageUrl'],
 				));
 			});

@@ -84,26 +84,29 @@ Future<void> fetchAndSetOrders(User user) async {
         
 		try {
 			final response = await http.get(Uri.parse(url));
-			final extractedData = json.decode(response.body) as Map<String, dynamic>;
+			final extractedData = json.decode(response.body) as Map<String, dynamic>?;
 
 			final List<OrderItem> loadedOrders = [];
-			extractedData.forEach((orderId, orderData) {
-        final List<CartItem> productList = [];
-        for (var item in orderData['products']) {
-          productList.add(CartItem(
-            id: item['id'], 
-            title: item['title'], 
-            quantity: item['quantity'], 
-            price: item['price']
-          ));
-        }
-				loadedOrders.add(OrderItem(
-					id: orderId,
-          amount: orderData['amount'],
-          dateTime: DateTime.parse(orderData['dateTime']),
-          products: productList
-				));
-			});
+      if(extractedData != null) {
+        extractedData.forEach((orderId, orderData) {
+          final List<CartItem> productList = [];
+          for (var item in orderData['products']) {
+            productList.add(CartItem(
+              id: item['id'], 
+              title: item['title'], 
+              quantity: item['quantity'], 
+              price: item['price']
+            ));
+          }
+				  loadedOrders.add(OrderItem(
+				  	id: orderId,
+            amount: orderData['amount'],
+            dateTime: DateTime.parse(orderData['dateTime']),
+            products: productList
+				  ));
+			  });
+      }
+
 			_orders = loadedOrders;
 			notifyListeners();
 		} catch (err) {
