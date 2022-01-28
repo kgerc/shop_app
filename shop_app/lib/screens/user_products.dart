@@ -35,13 +35,13 @@ class UserProductsScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(8),
           child: ListView.builder(
-            itemCount: productsData.items.length,
+            itemCount: productsData.myItems(FirebaseAuth.instance.currentUser!).length,
             itemBuilder: (_, i) => Column(
               children: [
                 UserProductItem(
-                  productsData.items[i].id,
-                  productsData.items[i].title,
-                  productsData.items[i].imageUrl,
+                  productsData.myItems(FirebaseAuth.instance.currentUser!)[i].id,
+                  productsData.myItems(FirebaseAuth.instance.currentUser!)[i].title,
+                  productsData.myItems(FirebaseAuth.instance.currentUser!)[i].imageUrl,
                 ),
                 Divider(),
               ],

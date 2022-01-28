@@ -10,6 +10,7 @@ import 'products.dart';
 
 class Product with ChangeNotifier {
 	final String id;
+  final String ownerId;
 	final String title;
 	final String description;
 	final double price;
@@ -23,6 +24,7 @@ class Product with ChangeNotifier {
 
 	Product({
 		required this.id,
+    required this.ownerId,
 		required this.title,
 		required this.description,
 		required this.price,

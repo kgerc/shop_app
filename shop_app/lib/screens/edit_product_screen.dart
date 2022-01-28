@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 		id: '',
 		title: '',
 		price: 0,
+    ownerId: FirebaseAuth.instance.currentUser!.uid,
 		description: '',
 		imageUrl: '',
 	);
@@ -159,6 +161,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 														description: _editedProduct.description,
 														imageUrl: _editedProduct.imageUrl,
 														id: _editedProduct.id,
+                            ownerId: FirebaseAuth.instance.currentUser!.uid,
 														isFavorite: _editedProduct.isFavorite);
 											},
 										),
@@ -191,6 +194,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 														description: _editedProduct.description,
 														imageUrl: _editedProduct.imageUrl,
 														id: _editedProduct.id,
+                            ownerId: FirebaseAuth.instance.currentUser!.uid,
 														isFavorite: _editedProduct.isFavorite);
 											},
 										),
@@ -216,6 +220,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 													description: value!,
 													imageUrl: _editedProduct.imageUrl,
 													id: _editedProduct.id,
+                          ownerId: FirebaseAuth.instance.currentUser!.uid,
 													isFavorite: _editedProduct.isFavorite,
 												);
 											},
@@ -272,6 +277,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 																description: _editedProduct.description,
 																imageUrl: value!,
 																id: _editedProduct.id,
+                                ownerId: FirebaseAuth.instance.currentUser!.uid,
 																isFavorite: _editedProduct.isFavorite,
 															);
 														},

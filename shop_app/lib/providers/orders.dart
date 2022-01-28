@@ -106,7 +106,6 @@ Future<void> fetchAndSetOrders(User user) async {
 			});
 			_orders = loadedOrders;
 			notifyListeners();
-      //print(loadedOrders);
 		} catch (err) {
 			rethrow;
 		}

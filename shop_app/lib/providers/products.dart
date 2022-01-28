@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -45,6 +46,10 @@ class Products with ChangeNotifier {
 		return [..._items];
 	}
 
+  	List<Product> myItems(User user) {
+		return _items.where((prodItem) => prodItem.ownerId == user.uid).toList();
+	}
+
 	List<Product> get favoriteItems {
 		return _items.where((prodItem) => prodItem.isFavorite).toList();
 	}
@@ -72,6 +77,7 @@ class Products with ChangeNotifier {
 				//TUTAJ SPRAWDZIMY CZY PRODUKT JEST W ULUBIONYCH W FIREBASIE
 				loadedProducts.add(Product(
 					id: prodId,
+          ownerId: prodData['ownerId'],
 					title: prodData['title'],
 					description: prodData['description'],
 					price: prodData['price'],
@@ -93,6 +99,7 @@ class Products with ChangeNotifier {
 				Uri.parse(url),
 				
 				body: json.encode({
+          'ownerId': product.ownerId,
 					'title': product.title,
 					'description': product.description,
 					'imageUrl': product.imageUrl,
@@ -102,6 +109,7 @@ class Products with ChangeNotifier {
 			);
 			final newProduct = Product(
 				title: product.title,
+        ownerId: product.ownerId,
 				description: product.description,
 				price: product.price,
 				imageUrl: product.imageUrl,
